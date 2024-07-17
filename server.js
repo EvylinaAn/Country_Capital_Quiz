@@ -30,7 +30,7 @@ let country_list;
 const fetchCountriesData = async () => {
   try {
     const response = await axios.get(COUNTRIES_URL);
-    country_list = response.data.data;
+    country_list = response.data.data.filter(country => country.capital !== "");
     return country_list;
   } catch (error) {
     console.error("Error fetching country", error);
@@ -67,7 +67,7 @@ app.get("/quiz", async (req, res) => {
   try {
     if (!country_list) {
       await fetchCountriesData();
-    } else {
+    }
       const randomCountry = fetchRandomCountryData();
       
       const twoCapitals = fetchTwoFalseCapitals(randomCountry);
@@ -76,7 +76,6 @@ app.get("/quiz", async (req, res) => {
         countryCapital: randomCountry.capital,
         falseCapitals: twoCapitals,
       });
-    }
   } catch (error) {
     res.status(500).json({ error: "Error while fetching data" });
   }
